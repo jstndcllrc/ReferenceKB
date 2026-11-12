@@ -1,0 +1,17 @@
+{
+  "name": "annotation-knowledge-base",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "start:prod": "powershell -ExecutionPolicy Bypass -File scripts/start-production.ps1",
+    "check": "node --check server.js && node --check public/app.js && node --check public/dashboard.js && node --check src/auth.js && node --check src/config.js && node --check src/migrations.js && node --check src/security.js",
+    "test": "node --test tests/regression.test.js",
+    "import": "node scripts/import-notes.js",
+    "backup": "node scripts/backup.js"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

@@ -1,0 +1,23 @@
+# Enable modules: proxy, proxy_http, headers, ssl, rewrite.
+# Replace kb.example.com and certificate paths before enabling this vhost.
+<VirtualHost *:80>
+    ServerName kb.example.com
+    RewriteEngine On
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName kb.example.com
+    SSLEngine On
+    SSLCertificateFile "C:/path/to/fullchain.pem"
+    SSLCertificateKeyFile "C:/path/to/privkey.pem"
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+    RequestHeader set X-Forwarded-Proto "https"
+    ProxyPass / http://127.0.0.1:3000/ retry=0 timeout=180
+    ProxyPassReverse / http://127.0.0.1:3000/
+
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+</VirtualHost>

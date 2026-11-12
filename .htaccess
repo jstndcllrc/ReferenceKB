@@ -1,0 +1,4 @@
+# This directory contains private Node.js source and SQLite data.
+# Apache must never serve it directly. Use the reverse-proxy virtual-host
+# example in deploy/apache-vhost.conf.example instead.
+Require all denied
