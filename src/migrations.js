@@ -176,6 +176,23 @@ const migrations = [
     run(db) {
       // Rebrand: Rename fusion_id column to yourcompany_id
       // SQLite doesn't support RENAME COLUMN directly, so recreate table
+      // Check if migration already applied (column already renamed)
+      const cols = db.prepare("PRAGMA table_info(users)").all().map(c => c.name);
+      const hasFusionId = cols.includes('fusion_id');
+      const hasYourCompanyId = cols.includes('yourcompany_id');
+
+      // If already migrated (has yourcompany_id, no fusion_id), skip
+      if (hasYourCompanyId && !hasFusionId) {
+        return;
+      }
+
+      // If neither column exists (fresh DB with v9), ensure yourcompany_id exists
+      if (!hasFusionId && !hasYourCompanyId) {
+        try { db.exec('ALTER TABLE users ADD COLUMN yourcompany_id TEXT'); } catch {}
+        return;
+      }
+
+      // Otherwise, migrate from fusion_id to yourcompany_id
       db.exec(`
         CREATE TABLE IF NOT EXISTS users_new(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -201,12 +218,9 @@ const migrations = [
         );
       `);
       // Copy data from old table
-      const cols = db.prepare("PRAGMA table_info(users)").all().map(c => c.name);
-      const hasFusionId = cols.includes('fusion_id');
-      const selectCols = hasFusionId ? cols : [...cols, 'fusion_id'];
-      const insertCols = selectCols.map(c => c === 'fusion_id' ? 'yourcompany_id' : c).join(',');
-      const selectColsStr = selectCols.join(',');
-      db.exec(`INSERT INTO users_new(${insertCols}) SELECT ${selectColsStr} FROM users`);
+      const selectCols = hasFusionId ? cols.map(c => c === 'fusion_id' ? 'yourcompany_id' : c).join(',') : cols.join(',');
+      const selectColsStr = cols.join(',');
+      db.exec(`INSERT INTO users_new(${selectCols}) SELECT ${selectColsStr} FROM users`);
       db.exec('DROP TABLE users');
       db.exec('ALTER TABLE users_new RENAME TO users');
       // Recreate indexes

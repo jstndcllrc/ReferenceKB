@@ -17,7 +17,7 @@ if (!fs.existsSync(kbSearchPath)) {
       title, content, document_id, source_url,
       tokenize='porter unicode61'
     );
-    CREATE TABLE chunks_fts_data(
+    CREATE TABLE chunks_meta(
       id INTEGER PRIMARY KEY,
       title TEXT, content TEXT, document_id TEXT, source_url TEXT
     );
