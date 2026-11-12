@@ -118,11 +118,11 @@ function tabBadge(name, count) {
 }
 
 function profileCell(account) {
-  const values = [account.full_name, account.fusion_id, account.outsourcing_id, account.email, account.phone_number];
+  const values = [account.full_name, account.yourcompany_id, account.outsourcing_id, account.email, account.phone_number];
   const missing = values.filter(value => !String(value || '').trim()).length;
   const row = (label, value, optional = false) => `<div><span>${esc(label)}</span><strong class="${value ? '' : optional ? 'optional' : 'blank'}">${esc(value || (optional ? 'Not provided - optional' : 'Not provided'))}</strong></div>`;
   const summary = missing ? `${missing} required field${missing === 1 ? '' : 's'} missing` : 'Profile complete';
-  return `<td class="profile-cell"><details class="profile-summary"><summary class="${missing ? 'missing' : ''}">${esc(summary)}</summary><div class="profile-details">${row('Full name', account.full_name)}${row('Fusion ID', account.fusion_id)}${row('Outsource ID', account.outsourcing_id)}${row('Team Leader', account.team_leader, true)}${row('Email', account.email)}${row('Number', account.phone_number)}${row('Chat name', account.chat_name_mode === 'username' ? 'Username' : 'Display name')}</div></details></td>`;
+  return `<td class="profile-cell"><details class="profile-summary"><summary class="${missing ? 'missing' : ''}">${esc(summary)}</summary><div class="profile-details">${row('Full name', account.full_name)}${row('YourCompany ID', account.yourcompany_id)}${row('Outsource ID', account.outsourcing_id)}${row('Team Leader', account.team_leader, true)}${row('Email', account.email)}${row('Number', account.phone_number)}${row('Chat name', account.chat_name_mode === 'username' ? 'Username' : 'Display name')}</div></details></td>`;
 }
 
 function auditPill(value) {
@@ -236,7 +236,7 @@ function openAccount(id) {
     '#edit-display-name': account.display_name || '',
     '#edit-username': account.username,
     '#edit-role': account.role,
-    '#edit-fusion-id': account.fusion_id || '',
+    '#edit-yourcompany-id': account.yourcompany_id || '',
     '#edit-outsourcing-id': account.outsourcing_id || '',
     '#edit-team-leader': account.team_leader || '',
     '#edit-email': account.email || '',
@@ -399,7 +399,7 @@ $('#add-user').addEventListener('submit', async event => {
     password: $('#new-password').value,
     password_repeat: $('#new-password-repeat').value,
     role: $('#new-role').value,
-    fusion_id: $('#new-fusion-id').value,
+    yourcompany_id: $('#new-yourcompany-id').value,
     outsourcing_id: $('#new-outsourcing-id').value,
     team_leader: $('#new-team-leader').value,
     email: $('#new-email').value,
@@ -422,7 +422,7 @@ $('#edit-user').addEventListener('submit', async event => {
     username: $('#edit-username').value,
     password: $('#edit-password').value,
     role: $('#edit-role').value,
-    fusion_id: $('#edit-fusion-id').value,
+    yourcompany_id: $('#edit-yourcompany-id').value,
     outsourcing_id: $('#edit-outsourcing-id').value,
     team_leader: $('#edit-team-leader').value,
     email: $('#edit-email').value,

@@ -1,4 +1,4 @@
-# Fusion Annotation Guide - Installation, Running & Deployment Guide
+# YourCompany Knowledge Base - Installation, Running & Deployment Guide
 
 ## Project Overview
 A secure knowledge base application for annotation guidance with search, chat, notepad, knowledge submission, and admin dashboard features.
@@ -15,7 +15,7 @@ A secure knowledge base application for annotation guidance with search, chat, n
 ### 1. Clone the Repository
 ```bash
 git clone <your-repo-url>
-cd "Fusion Annotation Guide"
+cd "YourCompany Knowledge Base"
 ```
 
 ### 2. Install Dependencies
@@ -86,7 +86,7 @@ Knowledge base running at http://127.0.0.1:3000
 ║  Password: <randomly-generated-20-char-password>                  ║
 ║  Role: Root / Developer (must change password on first login)    ║
 ╠═══════════════════════════════════════════════════════════════════╣
-║  Username: fusioncx                                               ║
+║  Username: yourcompanycx                                               ║
 ║  Password: <randomly-generated-20-char-password>                  ║
 ║  Role: User (must change password on first login)                ║
 ╚═══════════════════════════════════════════════════════════════════╝
@@ -109,14 +109,14 @@ const { passwordHash } = require('./src/security');
 const config = require('./src/config');
 const db = new DatabaseSync(path.join(config.KB_DIR, 'node-data.sqlite'));
 db.prepare('UPDATE users SET password_hash=?, must_change_password=0 WHERE username=?').run(passwordHash('AdminTest123!'), 'admin');
-db.prepare('UPDATE users SET password_hash=?, must_change_password=0 WHERE username=?').run(passwordHash('FusionTest123!'), 'fusioncx');
+db.prepare('UPDATE users SET password_hash=?, must_change_password=0 WHERE username=?').run(passwordHash('YourCompanyTest123!'), 'yourcompanycx');
 console.log('Passwords reset to known values');
 "
 ```
 
 Then login with:
 - **Admin**: `admin` / `AdminTest123!`
-- **User**: `fusioncx` / `FusionTest123!`
+- **User**: `yourcompanycx` / `YourCompanyTest123!`
 
 ---
 
@@ -165,11 +165,11 @@ All the following features have been tested and confirmed working:
 
 ## Project Structure
 ```
-Fusion Annotation Guide/
+YourCompany Knowledge Base/
 ├── server.js              # Main HTTP server
 ├── package.json           # Dependencies & scripts
 ├── .env                   # Environment config (create this)
-├── fusion.png             # Logo
+├── yourcompany.png             # Logo
 ├── node-app.html          # Main app template
 ├── node-dashboard.html    # Admin dashboard template
 ├── node-login.html        # Login template
@@ -232,15 +232,15 @@ flyctl deploy
 3. Clone repo, `npm install`
 4. Create systemd service:
 ```ini
-# /etc/systemd/system/fusion-kb.service
+# /etc/systemd/system/yourcompany-kb.service
 [Unit]
-Description=Fusion Knowledge Base
+Description=YourCompany Knowledge Base
 After=network.target
 
 [Service]
 Type=simple
 User=www-data
-WorkingDirectory=/var/www/fusion-kb
+WorkingDirectory=/var/www/yourcompany-kb
 ExecStart=/usr/bin/node server.js
 Restart=on-failure
 Environment=NODE_ENV=production
@@ -253,7 +253,7 @@ Environment=PORT=3000
 [Install]
 WantedBy=multi-user.target
 ```
-5. `sudo systemctl enable --now fusion-kb`
+5. `sudo systemctl enable --now yourcompany-kb`
 6. Set up Nginx reverse proxy with SSL (Let's Encrypt)
 
 ### Option 6: Docker Deployment
@@ -271,13 +271,13 @@ CMD ["node", "server.js"]
 
 Build & run:
 ```bash
-docker build -t fusion-kb .
+docker build -t yourcompany-kb .
 docker run -d -p 3000:3000 \
-  -v fusion-kb-data:/app/knowledge-base \
+  -v yourcompany-kb-data:/app/knowledge-base \
   -e PRODUCTION=true \
   -e COOKIE_SECURE=true \
   -e ROOT_RESET_SECRET=your-secret \
-  fusion-kb
+  yourcompany-kb
 ```
 
 ---
@@ -376,7 +376,7 @@ for i in {1..35}; do curl -s -o /dev/null -w "%{http_code}\n" -X POST http://loc
 
 ## License & Credits
 
-Developed by JD1504 for Fusion Annotation Guide.
+Developed by JD1504 for YourCompany Knowledge Base.
 Tesseract.js v5.1.1 (Apache-2.0) bundled locally.
 SQLite (Public Domain) via Node.js experimental module.
 

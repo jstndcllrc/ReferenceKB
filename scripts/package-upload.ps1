@@ -23,7 +23,7 @@ try {
     Copy-Item -LiteralPath (Join-Path $root $directory) -Destination $stage -Recurse
   }
 
-  foreach ($file in @('.htaccess', 'fusion.png', 'install.md', 'node-app.html', 'node-dashboard.html', 'node-change-password.html', 'node-login.html', 'package.json', 'server.js')) {
+  foreach ($file in @('.htaccess', 'yourcompany.png', 'install.md', 'node-app.html', 'node-dashboard.html', 'node-change-password.html', 'node-login.html', 'package.json', 'server.js')) {
     Copy-Item -LiteralPath (Join-Path $root $file) -Destination $stage
   }
 

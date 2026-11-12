@@ -1,7 +1,7 @@
-# Fusion Annotation Guide - Security Remediation Plan
+# YourCompany Knowledge Base - Security Remediation Plan
 
 ## Overview
-This document outlines the security vulnerabilities identified in the Fusion Annotation Guide application and the remediation steps applied. All changes were made to the codebase in `C:\Users\jstndcllr\Desktop\Virtual Assistant\Projects\Fusion Annotation Guide\`.
+This document outlines the security vulnerabilities identified in the YourCompany Knowledge Base application and the remediation steps applied. All changes were made to the codebase in `C:\Users\jstndcllr\Desktop\Virtual Assistant\Projects\YourCompany Knowledge Base\`.
 
 ---
 
@@ -33,7 +33,7 @@ This document outlines the security vulnerabilities identified in the Fusion Ann
 
 **Problem:** The bootstrap process created default accounts with hardcoded passwords:
 - `admin` / `Admin123!@#`
-- `fusioncx` / `FusionCX2024!`
+- `yourcompanycx` / `YourCompanyCX2024!`
 
 **Fix:** Implemented `generateSecurePassword()` function that creates cryptographically secure random passwords (20 characters). Passwords are displayed once on first run and users must change them on first login.
 
@@ -419,7 +419,7 @@ form-action 'self'
 
 A complete backup of the original codebase was created at:
 ```
-C:\Users\jstndcllr\Desktop\Virtual Assistant\Projects\Fusion Annotation Guide\backup_code\
+C:\Users\jstndcllr\Desktop\Virtual Assistant\Projects\YourCompany Knowledge Base\backup_code\
 ```
 
 ---
@@ -499,4 +499,4 @@ curl "http://localhost:3000/api/search?q=test'%20OR%201=1--" -b "kb_session=..."
 ---
 
 *Generated: November 12, 2026*
-*Project: Fusion Annotation Guide*
+*Project: YourCompany Knowledge Base*

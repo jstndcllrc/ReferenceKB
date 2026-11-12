@@ -40,7 +40,7 @@ const migrations = [
         'ALTER TABLE users ADD COLUMN can_submit_knowledge INTEGER NOT NULL DEFAULT 1',
         'ALTER TABLE users ADD COLUMN can_use_notepad INTEGER NOT NULL DEFAULT 1',
         'ALTER TABLE users ADD COLUMN full_name TEXT',
-        'ALTER TABLE users ADD COLUMN fusion_id TEXT',
+        'ALTER TABLE users ADD COLUMN yourcompany_id TEXT',
         'ALTER TABLE users ADD COLUMN outsourcing_id TEXT',
         'ALTER TABLE users ADD COLUMN team_leader TEXT',
         'ALTER TABLE users ADD COLUMN email TEXT',
@@ -171,6 +171,48 @@ const migrations = [
       }
     },
   },
+  {
+    version: 9,
+    run(db) {
+      // Rebrand: Rename fusion_id column to yourcompany_id
+      // SQLite doesn't support RENAME COLUMN directly, so recreate table
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS users_new(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT UNIQUE NOT NULL COLLATE NOCASE,
+          password_hash TEXT NOT NULL,
+          role TEXT NOT NULL CHECK(role IN ('admin','user')),
+          active INTEGER NOT NULL DEFAULT 1,
+          created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          display_name TEXT,
+          is_root INTEGER NOT NULL DEFAULT 0,
+          chat_name_mode TEXT NOT NULL DEFAULT 'display',
+          can_chat INTEGER NOT NULL DEFAULT 1,
+          can_submit_knowledge INTEGER NOT NULL DEFAULT 1,
+          can_use_notepad INTEGER NOT NULL DEFAULT 1,
+          full_name TEXT,
+          yourcompany_id TEXT,
+          outsourcing_id TEXT,
+          team_leader TEXT,
+          email TEXT,
+          phone_number TEXT,
+          must_change_password INTEGER NOT NULL DEFAULT 0
+        );
+      `);
+      // Copy data from old table
+      const cols = db.prepare("PRAGMA table_info(users)").all().map(c => c.name);
+      const hasFusionId = cols.includes('fusion_id');
+      const selectCols = hasFusionId ? cols : [...cols, 'fusion_id'];
+      const insertCols = selectCols.map(c => c === 'fusion_id' ? 'yourcompany_id' : c).join(',');
+      const selectColsStr = selectCols.join(',');
+      db.exec(`INSERT INTO users_new(${insertCols}) SELECT ${selectColsStr} FROM users`);
+      db.exec('DROP TABLE users');
+      db.exec('ALTER TABLE users_new RENAME TO users');
+      // Recreate indexes
+      db.exec('CREATE INDEX IF NOT EXISTS users_username_idx ON users(username)');
+    },
+  },
 ];
 
 const crypto = require('node:crypto');
@@ -195,14 +237,14 @@ function migrate(db) {
     try { migration.run(db); record.run(migration.version); db.exec('COMMIT'); }
     catch (error) { try { db.exec('ROLLBACK'); } catch {} throw error; }
   }
-  db.exec("UPDATE users SET display_name=CASE username WHEN 'admin' THEN 'Administrator' WHEN 'fusioncx' THEN 'Fusion CX' ELSE username END WHERE display_name IS NULL OR display_name=''");
+  db.exec("UPDATE users SET display_name=CASE username WHEN 'admin' THEN 'Administrator' WHEN 'yourcompanycx' THEN 'YourCompany CX' ELSE username END WHERE display_name IS NULL OR display_name=''");
   if (!db.prepare("SELECT value FROM settings WHERE key='bootstrap_complete'").get()) {
     const { passwordHash } = require('./security');
     const adminPassword = generateSecurePassword(20);
     const userPassword = generateSecurePassword(20);
     const insert = db.prepare('INSERT OR IGNORE INTO users(username,password_hash,role,must_change_password,full_name,display_name) VALUES(?,?,?,?,?,?)');
     insert.run('admin', passwordHash(adminPassword), 'admin', 1, 'Administrator', 'Administrator');
-    insert.run('fusioncx', passwordHash(userPassword), 'user', 1, 'Fusion CX', 'Fusion CX');
+    insert.run('yourcompanycx', passwordHash(userPassword), 'user', 1, 'YourCompany CX', 'YourCompany CX');
     db.prepare("INSERT INTO settings(key,value) VALUES('bootstrap_complete','1')").run();
     console.log('');
     console.log('╔═══════════════════════════════════════════════════════════════════╗');
@@ -212,7 +254,7 @@ function migrate(db) {
     console.log(`║  Password: ${adminPassword.padEnd(56)} ║`);
     console.log('║  Role: Root / Developer (must change password on first login)    ║');
     console.log('╠═══════════════════════════════════════════════════════════════════╣');
-    console.log('║  Username: fusioncx                                               ║');
+    console.log('║  Username: yourcompanycx                                          ║');
     console.log(`║  Password: ${userPassword.padEnd(56)} ║`);
     console.log('║  Role: User (must change password on first login)                ║');
     console.log('╚═══════════════════════════════════════════════════════════════════╝');

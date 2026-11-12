@@ -1,4 +1,4 @@
-# ReferenceKB - Fusion Annotation Knowledge Base
+# ReferenceKB - YourCompany Knowledge Base
 
 A secure, production-ready knowledge base application for annotation guidance with full-text search, real-time chat, notepad, knowledge submission workflow, and admin dashboard.
 
@@ -81,7 +81,7 @@ npm start
 ### Default Accounts (First Run)
 On first start, two accounts are created with random passwords:
 - `admin` - Root/Developer (must change password)
-- `fusioncx` - Regular User (must change password)
+- `yourcompanycx` - Regular User (must change password)
 
 Check console output for passwords. For testing, reset to known values:
 ```bash
@@ -91,12 +91,12 @@ const path = require('path');
 const { passwordHash } = require('./src/security');
 const db = new DatabaseSync(path.join('./knowledge-base', 'node-data.sqlite'));
 db.prepare('UPDATE users SET password_hash=?, must_change_password=0 WHERE username=?').run(passwordHash('AdminTest123!'), 'admin');
-db.prepare('UPDATE users SET password_hash=?, must_change_password=0 WHERE username=?').run(passwordHash('FusionTest123!'), 'fusioncx');
+db.prepare('UPDATE users SET password_hash=?, must_change_password=0 WHERE username=?').run(passwordHash('YourCompanyTest123!'), 'yourcompanycx');
 console.log('Passwords reset');
 "
 ```
 
-Then login: `admin` / `AdminTest123!` or `fusioncx` / `FusionTest123!`
+Then login: `admin` / `AdminTest123!` or `yourcompanycx` / `YourCompanyTest123!`
 
 ## 🌐 Deployment
 
@@ -122,7 +122,7 @@ Then login: `admin` / `AdminTest123!` or `fusioncx` / `FusionTest123!`
 1. [render.com](https://render.com) → New Web Service
 2. Connect repo, Build: `npm install`, Start: `npm start`
 3. Add Environment Variables (same as above)
-4. Settings → Disks → Add: `knowledge-base` → Mount `/var/www/fusion-kb/knowledge-base` → 1 GB
+4. Settings → Disks → Add: `knowledge-base` → Mount `/var/www/yourcompany-kb/knowledge-base` → 1 GB
 5. Deploy (requires Starter plan for persistent disk)
 
 ### Fly.io
@@ -172,7 +172,7 @@ ReferenceKB/
 ├── server.js                 # Main HTTP server
 ├── package.json              # Dependencies & scripts
 ├── .env                      # Environment config (create locally)
-├── fusion.png                # Logo
+├── yourcompany.png                # Logo
 ├── node-app.html             # Main app template
 ├── node-dashboard.html       # Admin dashboard template
 ├── node-login.html           # Login template
@@ -235,7 +235,7 @@ curl -s -b cookies.txt -c cookies.txt -X POST http://localhost:3000/login \
 
 ## 📝 License
 
-Developed for Fusion Annotation Guide.  
+Developed for YourCompany Knowledge Base.  
 Tesseract.js v5.1.1 (Apache-2.0) bundled locally.  
 SQLite (Public Domain) via Node.js experimental module.
 
